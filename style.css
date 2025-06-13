@@ -32,3 +32,50 @@ a:hover {
   color: #005b99;
 }
 
+#question-container {
+  max-width: 20rem;
+  justify-items: center;
+  justify-self: center;
+  margin: 15rem;
+}
+
+#choices {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+}
+
+.choice-btn {
+  padding: 10px 20px;
+  font-size: 1rem;
+  background: #f0f0f0;
+  border: 1px solid #888;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.choice-btn.clicked {
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.choice-btn.incorrect.clicked.chosen {
+  pointer-events: none;
+  background-color: red;
+  opacity: 1.0;
+}
+
+.choice-btn.correct.clicked.chosen {
+  pointer-events: none;
+  background-color: green;
+  opacity: 1.0;
+}
+.choice-btn.correct.clicked {
+  pointer-events: none;
+  background-color: green;
+}
+
+.choice-btn:hover {
+  background: #d0eaff;
+}
