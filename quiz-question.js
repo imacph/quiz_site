@@ -30,6 +30,7 @@ function displayQuestion() {
     const questionEl = document.getElementById("question");
     const choicesEl = document.getElementById("choices");
     const nextBtn = document.getElementById("next-btn");
+    let questionStart = performance.now();
     nextBtn.classList.add('hidden');
     
     questionEl.textContent = questionText;
@@ -47,8 +48,13 @@ function displayQuestion() {
             btn.classList.add('chosen');
             nextBtn.classList.remove('hidden');
 
-
+            let questionTime = performance.now() - questionStart;
             let answerFlag = (btn.textContent == correctAnswer);
+
+            if (answerFlag) {
+                questionTimes.push(questionTime);
+            }
+            
             displayScore(answerFlag);
 
             choiceButtons.forEach(otherBtn=>{
@@ -68,10 +74,19 @@ function displayQuestion() {
 function displayScore(answerFlag) {
 
     const restartBtn = document.getElementById("restart-btn");
+    const timeDisplayEl = document.getElementById("time-display");
+    timeDisplayEl.textContent = "";
+
     if (totalQuestions < 0) {
         restartBtn.classList.add('hidden');
     } else {
         restartBtn.classList.remove('hidden');
+    }
+
+    if (questionTimes.length > 0) {
+        const totalTime = questionTimes.reduce((acc, time) => acc + time, 0)/1000;
+        const averageTime = (totalTime / questionTimes.length).toFixed(2);
+        timeDisplayEl.textContent = `Average Time: ${averageTime}s`;
     }
 
     totalQuestions++;
@@ -86,13 +101,14 @@ function displayScore(answerFlag) {
 function resetQuiz() {
     totalQuestions = -1;
     correctAnswers = 0;
+    questionTimes = [];
     displayQuestion();
     displayScore(false);
 }
 
 let totalQuestions = -1;
 let correctAnswers = 0;
-
+let questionTimes = [];
 document.getElementById("next-btn").addEventListener("click",displayQuestion);
 displayQuestion();
 displayScore(false);
