@@ -11,7 +11,7 @@ const firebaseConfig = {
     apiKey: "AIzaSyDVDOv9bnLP8kTrpzo9KQzAhmCSWMZeEU0",
     authDomain: "quiz-app-d64f5.firebaseapp.com",
     projectId: "quiz-app-d64f5",
-    storageBucket: "quiz-app-d64f5.firebasestorage.app",
+    storageBucket: "quiz-app-d64f5.appspot.com",
     messagingSenderId: "137094184065",
     appId: "1:137094184065:web:928b7ec8d14e8fbe9ee180",
     measurementId: "G-HB3RZKDKZK"
@@ -41,15 +41,19 @@ signInBtn.addEventListener("click", async () => {
     await signInWithEmailAndPassword(auth, emailInput.value, passwordInput.value);
     statusText.textContent = "Signed in!";
     await new Promise(resolve => setTimeout(resolve, 300));
-    window.location.href = 'index.html';
+    window.location.href = 'quiz-question.html';
     } catch (error) {
     statusText.textContent = "Error: " + error.message;
     }
 });
 
 signOutBtn.addEventListener("click", async () => {
-    await signOut(auth);
-    statusText.textContent = "Signed out.";
+    try {
+        await signOut(auth);
+        statusText.textContent = "Signed out.";
+    } catch (error) {
+        statusText.textContent = "Error: " + error.message;
+    }
 });
 
 onAuthStateChanged(auth, user => {

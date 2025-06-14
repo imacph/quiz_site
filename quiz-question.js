@@ -35,9 +35,9 @@ function displayQuestion() {
 
     choicesEl.innerHTML = choices.map(choice => {
         if (choice === correctAnswer) {
-            return`<button class="choice-btn correct">${choice}</button>`;
+            return`<button class="choice-btn">${choice}</button>`;
         } else {
-            return`<button class="choice-btn incorrect">${choice}</button>`;
+            return`<button class="choice-btn">${choice}</button>`;
         }
         
     }).join('');
@@ -50,6 +50,11 @@ function displayQuestion() {
             btn.classList.add('chosen');
             choiceButtons.forEach(otherBtn=>{
                 otherBtn.classList.add('clicked');
+                if (otherBtn.textContent == correctAnswer) {
+                    otherBtn.classList.add('correct');
+                } else {
+                    otherBtn.classList.add('incorrect');
+                }
             });
         });
     });

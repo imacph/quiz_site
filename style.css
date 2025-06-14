@@ -79,3 +79,10 @@ a:hover {
 .choice-btn:hover {
   background: #d0eaff;
 }
+
+#login-container {
+  max-width: 20rem;
+  justify-items: center;
+  justify-self: center;
+  margin: 15rem;
+}
