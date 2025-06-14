@@ -128,3 +128,27 @@ a:hover {
   cursor: pointer;
   transition: background 0.2s;
 }
+
+#start-btn {
+  padding: 1em 1em;
+  font-size: 1rem;
+  background: #f0f0f0;
+  border: 1px solid #888;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.2s;
+  font-size: 3rem;
+}
+
+#start-btn-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  margin: 15rem auto 0 auto;
+  max-width: 50%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  z-index: 10;
+}

@@ -1,3 +1,10 @@
+
+import { app } from "./firebase.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js";
+import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js";
+
+
+
 function generateLinearEquationQuestion() {
     const a = Math.floor(Math.random()*10)+1;
     const x = Math.floor(Math.random()*20) - 10;
@@ -25,14 +32,31 @@ function generateLinearEquationQuestion() {
 
 }
 
+
+function checkLoopCondition() {
+    if (totalQuestions >= 10) {
+        resetQuiz(false);
+    } else {
+        displayQuestion();
+    }
+}
+
 function displayQuestion() {
 
+    
+    [questionEl, choicesEl, nextBtn, restartBtn].forEach(el => {
+        el.classList.remove('hidden');
+    });
+
     const {questionText,choices,correctAnswer} = generateLinearEquationQuestion();
-    const questionEl = document.getElementById("question");
-    const choicesEl = document.getElementById("choices");
-    const nextBtn = document.getElementById("next-btn");
     let questionStart = performance.now();
     nextBtn.classList.add('hidden');
+
+    if (totalQuestions < 8) {
+        nextBtn.textContent = "Next Question";
+    } else {
+        nextBtn.textContent = "Finish Quiz";
+    }
     
     questionEl.textContent = questionText;
     choicesEl.innerHTML = "";
@@ -49,6 +73,7 @@ function displayQuestion() {
             btn.classList.add('chosen');
             nextBtn.classList.remove('hidden');
 
+            
             let questionTime = performance.now() - questionStart;
             let answerFlag = (btn.textContent == correctAnswer);
 
@@ -74,7 +99,7 @@ function displayQuestion() {
 
 function displayScore(answerFlag) {
 
-    const restartBtn = document.getElementById("restart-btn");
+    
     const timeDisplayEl = document.getElementById("time-display");
     timeDisplayEl.textContent = "";
 
@@ -99,21 +124,28 @@ function displayScore(answerFlag) {
 }
 
 
-function resetQuiz() {
-    saveScoreAfterQuiz(correctAnswers/totalQuestions);
+function resetQuiz(resetButtonClicked) {
+
+    startBtn.classList.remove('hidden');
+
+    [questionEl, choicesEl, nextBtn, restartBtn].forEach(el => {
+        el.classList.add('hidden');
+    });
+    
+    if (!resetButtonClicked) {
+        saveScoreAfterQuiz(correctAnswers/totalQuestions);
+    } else {
+        console.log("Quiz reset by user. Not saving score.");
+    }
+
     totalQuestions = -1;
     correctAnswers = 0;
     questionTimes = [];
-    displayQuestion();
-    displayScore(false);
+
+    
 }
 
-import { app } from "./firebase.js";
-import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js";
-import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js";
 
-const auth = getAuth(app);
-const db = getFirestore(app);
 
 async function saveScoreAfterQuiz(score) {
   const user = auth.currentUser;
@@ -129,11 +161,30 @@ async function saveScoreAfterQuiz(score) {
   }
 }
 
+// Firebase initialization
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// Quiz initialization
 let totalQuestions = -1;
 let correctAnswers = 0;
 let questionTimes = [];
-document.getElementById("next-btn").addEventListener("click",displayQuestion);
-displayQuestion();
-displayScore(false);
 
-document.getElementById("restart-btn").addEventListener("click",resetQuiz);
+const startBtn = document.getElementById("start-btn");
+startBtn.addEventListener("click", () => {
+    startBtn.classList.add('hidden');
+    displayQuestion();
+    displayScore(false);
+});
+
+const restartBtn = document.getElementById("restart-btn");
+const questionEl = document.getElementById("question");
+const choicesEl = document.getElementById("choices");
+const nextBtn = document.getElementById("next-btn");
+
+[questionEl, choicesEl, nextBtn, restartBtn].forEach(el => {
+    el.classList.add('hidden');
+});
+
+document.getElementById("next-btn").addEventListener("click",checkLoopCondition);
+document.getElementById("restart-btn").addEventListener("click", () => resetQuiz(true));
