@@ -26,6 +26,7 @@ function generateLinearEquationQuestion() {
 }
 
 function displayQuestion() {
+
     const {questionText,choices,correctAnswer} = generateLinearEquationQuestion();
     const questionEl = document.getElementById("question");
     const choicesEl = document.getElementById("choices");
@@ -99,11 +100,33 @@ function displayScore(answerFlag) {
 
 
 function resetQuiz() {
+    saveScoreAfterQuiz(correctAnswers/totalQuestions);
     totalQuestions = -1;
     correctAnswers = 0;
     questionTimes = [];
     displayQuestion();
     displayScore(false);
+}
+
+import { app } from "./firebase.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js";
+import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js";
+
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+async function saveScoreAfterQuiz(score) {
+  const user = auth.currentUser;
+  if (user) {
+    try {
+      await setDoc(doc(db, "scores", user.uid), {score});
+      console.log("Score saved!");
+    } catch (error) {
+      console.error("Firestore write error:", error);
+    }
+  } else {
+    console.error("No user is signed in.");
+  }
 }
 
 let totalQuestions = -1;

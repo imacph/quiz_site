@@ -1,4 +1,4 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js";
+import { app } from "./firebase.js";
 import {
     getAuth,
     createUserWithEmailAndPassword,
@@ -6,18 +6,12 @@ import {
     signOut,
     onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js";
+import {
+    getFirestore,
+    doc,
+    setDoc
+} from "https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js";
 
-const firebaseConfig = {
-    apiKey: "AIzaSyDVDOv9bnLP8kTrpzo9KQzAhmCSWMZeEU0",
-    authDomain: "quiz-app-d64f5.firebaseapp.com",
-    projectId: "quiz-app-d64f5",
-    storageBucket: "quiz-app-d64f5.appspot.com",
-    messagingSenderId: "137094184065",
-    appId: "1:137094184065:web:928b7ec8d14e8fbe9ee180",
-    measurementId: "G-HB3RZKDKZK"
-};
-
-const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
 const emailInput = document.getElementById("email");
@@ -38,12 +32,13 @@ signUpBtn.addEventListener("click", async () => {
 
 signInBtn.addEventListener("click", async () => {
     try {
-    await signInWithEmailAndPassword(auth, emailInput.value, passwordInput.value);
-    statusText.textContent = "Signed in!";
-    await new Promise(resolve => setTimeout(resolve, 300));
-    window.location.href = 'quiz-question.html';
+        await signInWithEmailAndPassword(auth, emailInput.value, passwordInput.value);
+        statusText.textContent = "Signed in!"
+
+        await new Promise(resolve => setTimeout(resolve, 300));
+        window.location.href = 'quiz-question.html';
     } catch (error) {
-    statusText.textContent = "Error: " + error.message;
+        statusText.textContent = "Error: " + error.message;
     }
 });
 
@@ -65,3 +60,4 @@ onAuthStateChanged(auth, user => {
     signOutBtn.style.display = "none";
     }
 });
+
