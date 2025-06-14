@@ -97,3 +97,24 @@ a:hover {
   right: 1rem;
   top: 1rem;
 }
+
+.hidden {
+  display: none;
+  pointer-events: none;
+}
+
+#next-btn {
+  padding: 16px 20px;
+  font-size: 1rem;
+  background: #f0f0f0;
+  border: 1px solid #888;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+#next-btn:hover {
+  background: #d0eaff;
+}

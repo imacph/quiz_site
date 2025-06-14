@@ -29,7 +29,10 @@ function displayQuestion() {
     const {questionText,choices,correctAnswer} = generateLinearEquationQuestion();
     const questionEl = document.getElementById("question");
     const choicesEl = document.getElementById("choices");
+    const nextBtn = document.getElementById("next-btn");
 
+    nextBtn.classList.add('hidden');
+    
     questionEl.textContent = questionText;
     choicesEl.innerHTML = "";
 
@@ -48,9 +51,9 @@ function displayQuestion() {
     choiceButtons.forEach(btn => {
         btn.addEventListener('click',()=>{
             btn.classList.add('chosen');
+            nextBtn.classList.remove('hidden');
 
             let answerFlag = (btn.textContent == correctAnswer);
-
             displayScore(answerFlag);
 
             choiceButtons.forEach(otherBtn=>{
@@ -73,7 +76,7 @@ function displayScore(answerFlag) {
         correctAnswers++;
     }
     const scoreEl = document.getElementById("score-display");
-    scoreEl.textContent = `Total Questions: ${totalQuestions}, Correct Answers: ${correctAnswers}`;
+    scoreEl.textContent = `${correctAnswers}/${totalQuestions}`;
 }
 
 
