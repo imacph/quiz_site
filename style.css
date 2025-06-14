@@ -118,3 +118,13 @@ a:hover {
 #next-btn:hover {
   background: #d0eaff;
 }
+
+#restart-btn {
+  padding: 16px 20px;
+  font-size: 1rem;
+  background: #f0f0f0;
+  border: 1px solid #888;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.2s;
+}

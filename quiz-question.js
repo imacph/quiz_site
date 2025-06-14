@@ -30,20 +30,14 @@ function displayQuestion() {
     const questionEl = document.getElementById("question");
     const choicesEl = document.getElementById("choices");
     const nextBtn = document.getElementById("next-btn");
-
     nextBtn.classList.add('hidden');
     
     questionEl.textContent = questionText;
     choicesEl.innerHTML = "";
 
-    choicesEl.innerHTML = choices.map(choice => {
-        if (choice === correctAnswer) {
-            return`<button class="choice-btn">${choice}</button>`;
-        } else {
-            return`<button class="choice-btn">${choice}</button>`;
-        }
-        
-    }).join('');
+    choicesEl.innerHTML = choices.map(choice => 
+        `<button class="choice-btn">${choice}</button>`
+    ).join('');
 
     const choiceButtons = choicesEl.querySelectorAll(".choice-btn");
 
@@ -52,6 +46,7 @@ function displayQuestion() {
         btn.addEventListener('click',()=>{
             btn.classList.add('chosen');
             nextBtn.classList.remove('hidden');
+
 
             let answerFlag = (btn.textContent == correctAnswer);
             displayScore(answerFlag);
@@ -71,6 +66,14 @@ function displayQuestion() {
 }
 
 function displayScore(answerFlag) {
+
+    const restartBtn = document.getElementById("restart-btn");
+    if (totalQuestions < 0) {
+        restartBtn.classList.add('hidden');
+    } else {
+        restartBtn.classList.remove('hidden');
+    }
+
     totalQuestions++;
     if (answerFlag) {
         correctAnswers++;
@@ -80,9 +83,18 @@ function displayScore(answerFlag) {
 }
 
 
+function resetQuiz() {
+    totalQuestions = -1;
+    correctAnswers = 0;
+    displayQuestion();
+    displayScore(false);
+}
+
 let totalQuestions = -1;
 let correctAnswers = 0;
 
 document.getElementById("next-btn").addEventListener("click",displayQuestion);
 displayQuestion();
 displayScore(false);
+
+document.getElementById("restart-btn").addEventListener("click",resetQuiz);
