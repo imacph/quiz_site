@@ -48,9 +48,14 @@ function displayQuestion() {
     choiceButtons.forEach(btn => {
         btn.addEventListener('click',()=>{
             btn.classList.add('chosen');
+
+            let answerFlag = (btn.textContent == correctAnswer);
+
+            displayScore(answerFlag);
+
             choiceButtons.forEach(otherBtn=>{
                 otherBtn.classList.add('clicked');
-                if (otherBtn.textContent == correctAnswer) {
+                if (Number(otherBtn.textContent) === correctAnswer) {
                     otherBtn.classList.add('correct');
                 } else {
                     otherBtn.classList.add('incorrect');
@@ -62,6 +67,19 @@ function displayQuestion() {
     
 }
 
+function displayScore(answerFlag) {
+    totalQuestions++;
+    if (answerFlag) {
+        correctAnswers++;
+    }
+    const scoreEl = document.getElementById("score-display");
+    scoreEl.textContent = `Total Questions: ${totalQuestions}, Correct Answers: ${correctAnswers}`;
+}
+
+
+let totalQuestions = -1;
+let correctAnswers = 0;
 
 document.getElementById("next-btn").addEventListener("click",displayQuestion);
 displayQuestion();
+displayScore(false);

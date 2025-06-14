@@ -86,3 +86,14 @@ a:hover {
   justify-self: center;
   margin: 15rem;
 }
+
+#score-container {
+  max-width: 20rem;
+  width: 100%;
+  justify-items: center;
+  justify-self: right;
+  margin: 3rem;
+  position: absolute;
+  right: 1rem;
+  top: 1rem;
+}
