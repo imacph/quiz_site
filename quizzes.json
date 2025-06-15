@@ -1,0 +1,16 @@
+[
+  {
+    "image": "linear-equations.jpg",
+    "title": "Single Variable Linear Equations",
+    "description": "This quiz tests your understanding of single variable linear equations. You will solve equations of the form ax + b = c, where a, b, and c are constants. The quiz includes multiple-choice questions to assess your ability to isolate the variable and find its value.",
+    "id": "linear-equations-1",
+    "disabled": ""
+},
+  {
+    "image": "quadratic-equations.jpg",
+    "title": "Quadratic Equations with Real Roots",
+    "description": "This quiz focuses on quadratic equations that have real roots. You will solve equations of the form ax^2 + bx + c = 0, where a, b, and c are constants. The quiz includes questions on factoring, using the quadratic formula, and identifying the nature of the roots based on the discriminant.",
+    "id": "quadratic-equations-1",
+    "disabled": "disabled"
+  }
+]

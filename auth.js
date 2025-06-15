@@ -36,7 +36,7 @@ signInBtn.addEventListener("click", async () => {
         statusText.textContent = "Signed in!"
 
         await new Promise(resolve => setTimeout(resolve, 300));
-        window.location.href = 'quiz-question.html';
+        window.location.href = 'dashboard.html';
     } catch (error) {
         statusText.textContent = "Error: " + error.message;
     }

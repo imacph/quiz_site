@@ -1,7 +1,7 @@
 
 import { app } from "./firebase.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js";
-import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js";
+import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js";
 
 
 
@@ -52,7 +52,7 @@ function displayQuestion() {
     let questionStart = performance.now();
     nextBtn.classList.add('hidden');
 
-    if (totalQuestions < 8) {
+    if (totalQuestions < 9) {
         nextBtn.textContent = "Next Question";
     } else {
         nextBtn.textContent = "Finish Quiz";
@@ -133,7 +133,7 @@ function resetQuiz(resetButtonClicked) {
     });
     
     if (!resetButtonClicked) {
-        saveScoreAfterQuiz(correctAnswers/totalQuestions);
+        saveScoreAfterQuiz(calculateScore());
     } else {
         console.log("Quiz reset by user. Not saving score.");
     }
@@ -145,20 +145,51 @@ function resetQuiz(resetButtonClicked) {
     
 }
 
+function calculateScore() {
 
+    if (correctAnswers === 0) {
+        return 0.00;
+    } else {
+        const accuracy = correctAnswers / 10;
+        const averageTime = (questionTimes.reduce((acc,time) => acc + time, 0) / questionTimes.length)/1000;
+
+
+        const score = 100 * accuracy * Math.exp(-averageTime / 10);
+        return score.toFixed(2);
+    }
+}
 
 async function saveScoreAfterQuiz(score) {
-  const user = auth.currentUser;
-  if (user) {
-    try {
-      await setDoc(doc(db, "scores", user.uid), {score});
-      console.log("Score saved!");
-    } catch (error) {
-      console.error("Firestore write error:", error);
+    const user = auth.currentUser;
+    if (user) {
+        try {
+            const scoreRef = doc(db, "scores", user.uid);
+            const docSnap = await getDoc(scoreRef);
+            let shouldUpdate = true;
+            if (docSnap && docSnap.exists && docSnap.exists()) {
+                const data = docSnap.data();
+                if (typeof data.score === "number" && data.score >= Number(score) && data.displayName === user.displayName) {
+                    shouldUpdate = false;
+                }
+                if (!user.displayName) {
+                    shouldUpdate = false;
+                }
+            }
+            if (shouldUpdate) {
+                await setDoc(scoreRef, { 
+                    score: Number(score),
+                    displayName: user.displayName 
+                });
+                console.log("Score saved!");
+            } else {
+                console.log("Existing score is higher or equal. Not updating.");
+            }
+        } catch (error) {
+            console.error("Firestore write error:", error);
+        }
+    } else {
+        console.error("No user is signed in.");
     }
-  } else {
-    console.error("No user is signed in.");
-  }
 }
 
 // Firebase initialization
@@ -188,3 +219,6 @@ const nextBtn = document.getElementById("next-btn");
 
 document.getElementById("next-btn").addEventListener("click",checkLoopCondition);
 document.getElementById("restart-btn").addEventListener("click", () => resetQuiz(true));
+document.getElementById("dashboard-btn").addEventListener("click", () => {
+    window.location.href = 'dashboard.html';
+});
