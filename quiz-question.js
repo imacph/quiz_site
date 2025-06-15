@@ -127,7 +127,10 @@ function displayScore(answerFlag) {
 function resetQuiz(resetButtonClicked) {
 
     startBtn.classList.remove('hidden');
-
+    document.querySelectorAll(".choice-btn").forEach(btn => {
+        btn.classList.remove('chosen', 'clicked', 'correct', 'incorrect');
+        btn.classList.add('hidden');
+    });
     [questionEl, choicesEl, nextBtn, restartBtn].forEach(el => {
         el.classList.add('hidden');
     });
@@ -178,7 +181,8 @@ async function saveScoreAfterQuiz(score) {
             if (shouldUpdate) {
                 await setDoc(scoreRef, { 
                     score: Number(score),
-                    displayName: user.displayName 
+                    displayName: user.displayName,
+                    userId: user.uid 
                 });
                 console.log("Score saved!");
             } else {

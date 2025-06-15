@@ -98,7 +98,7 @@ async function trySetDisplayName(user) {
         alert("Display name cannot be empty.");
         return;
     }
-    if (await isDisplayNameTaken(newName)) {
+    if (await isDisplayNameTaken(user)) {
         alert("That display name is already taken. Please choose another.");
         return;
     }
@@ -109,13 +109,16 @@ async function trySetDisplayName(user) {
     }
 }
 
-async function isDisplayNameTaken(displayName) {
+async function isDisplayNameTaken(user) {
+    // Firestore does not support "!="; use "not-in" or filter after fetching
     const q = query(
         collection(db, "scores"),
-        where("displayName", "==", displayName)
+        where("displayName", "==", user.displayName)
     );
     const querySnapshot = await getDocs(q);
-    return !querySnapshot.empty;
+    // Filter out the current user's own document
+    return querySnapshot.docs.some(doc => doc.data().userId !== user.uid);
+    
 }
 
 // Firebase initialization

@@ -51,3 +51,5 @@ displayLeaderboard(quizId);
 document.getElementById("dashboard-btn").addEventListener("click", () => {
     window.location.href = 'dashboard.html';
 });
+
+document.getElementById("leaderboard-title").textContent = `Leaderboard for ${quizId.replace(/-/g, ' ')}`;

@@ -210,3 +210,43 @@ a:hover {
   pointer-events: none;
   opacity: 0.6;
 }
+
+@media (max-width: 30rem) {
+  #login-container {
+    max-width: 10rem;
+    margin: 10rem auto
+  }
+
+  #quiz-container {
+    grid-template-columns: 1fr;
+    max-width: 100%;
+  }
+
+  #leaderboard-container {
+    max-width: 10rem;
+    margin: 10rem auto;
+  }
+  #question-container {
+    max-width: 10rem;
+    margin: 15rem auto;
+    left: 2rem;
+    position: absolute
+  }
+  #choices {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  #question{
+    font-size: 1.5rem;
+  }
+
+  #score-container {
+    max-width: 10rem;
+    width: 100%;
+    right: 0rem;
+    top: 1rem;
+    margin: 0;
+  }
+
+
+}
