@@ -53,3 +53,6 @@ document.getElementById("dashboard-btn").addEventListener("click", () => {
 });
 
 document.getElementById("leaderboard-title").textContent = `Leaderboard for ${quizId.replace(/-/g, ' ')}`;
+document.getElementById("quiz-btn").addEventListener("click", () => {
+    window.location.href = `quiz-question.html?quizId=${quizId}`;
+});

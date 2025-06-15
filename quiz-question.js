@@ -226,3 +226,6 @@ document.getElementById("restart-btn").addEventListener("click", () => resetQuiz
 document.getElementById("dashboard-btn").addEventListener("click", () => {
     window.location.href = 'dashboard.html';
 });
+document.getElementById("leaderboard-btn").addEventListener("click", () => {
+    window.location.href = 'leaderboard.html?quizId=linear-equations-1';
+});

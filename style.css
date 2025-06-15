@@ -186,7 +186,7 @@ a:hover {
   max-width: 20rem;
   justify-items: center;
   justify-self: center;
-  margin: 15rem;
+  margin: 5rem;
 }
 
 #dashboard-btn {
@@ -199,6 +199,32 @@ a:hover {
   transition: background 0.2s;
   position: absolute;
   top: 1rem;
+  left: 1rem;
+}
+
+#leaderboard-btn {
+  padding: 16px 20px;
+  font-size: 1rem;
+  background: #f0f0f0;
+  border: 1px solid #888;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.2s;
+  position: absolute;
+  top: 5rem;
+  left: 1rem;
+}
+
+#quiz-btn {
+  padding: 16px 20px;
+  font-size: 1rem;
+  background: #f0f0f0;
+  border: 1px solid #888;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.2s;
+  position: absolute;
+  top: 5rem;
   left: 1rem;
 }
 
@@ -247,6 +273,5 @@ a:hover {
     top: 1rem;
     margin: 0;
   }
-
 
 }
