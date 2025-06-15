@@ -1,21 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
+  <title>Quiz App Login</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ian MacPherson | Portfolio</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <header>
-    <h1>Placeholder Header</h1>
-    <p>placeholder body text</p>
-  </header>
+  <div id = "login-container">
 
+    <h1>Sign In / Sign Up</h1>
 
-  <script src="script.js"></script>
+    <input type="email" id="email" placeholder="Email"><br>
+    <input type="password" id="password" placeholder="Password"><br>
+
+    <button id="signUpBtn">Sign Up</button>
+    <button id="signInBtn">Sign In</button>
+    <button id="signOutBtn" style="display:none;">Sign Out</button>
+
+    <p id="status"></p>
+  </div>
+
+  <script src="auth.js" type="module"></script>
 </body>
-
-
-
 </html>

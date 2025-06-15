@@ -87,7 +87,7 @@ function renderUserInfo(user) {
 
     document.getElementById('logout-btn').addEventListener('click', () => {
         auth.signOut().then(() => {
-            window.location.href = 'login.html';
+            window.location.href = 'index.html';
         });
     });
 }
