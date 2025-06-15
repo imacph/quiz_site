@@ -100,7 +100,6 @@ function displayQuestion() {
 function displayScore(answerFlag) {
 
     
-    const timeDisplayEl = document.getElementById("time-display");
     timeDisplayEl.textContent = "";
 
     if (totalQuestions < 0) {
@@ -119,13 +118,16 @@ function displayScore(answerFlag) {
     if (answerFlag) {
         correctAnswers++;
     }
-    const scoreEl = document.getElementById("score-display");
+    
     scoreEl.textContent = `${correctAnswers}/${totalQuestions}`;
 }
 
 
 function resetQuiz(resetButtonClicked) {
 
+    timeDisplayEl.textContent = "";
+    scoreEl.textContent = "";
+    finalScoreEl.textContent = `Final Score: ${calculateScore()}`;
     startBtn.classList.remove('hidden');
     document.querySelectorAll(".choice-btn").forEach(btn => {
         btn.classList.remove('chosen', 'clicked', 'correct', 'incorrect');
@@ -204,10 +206,13 @@ const db = getFirestore(app);
 let totalQuestions = -1;
 let correctAnswers = 0;
 let questionTimes = [];
-
+const scoreEl = document.getElementById("score-display");
+const timeDisplayEl = document.getElementById("time-display");
+const finalScoreEl = document.getElementById("final-score-display");
 const startBtn = document.getElementById("start-btn");
 startBtn.addEventListener("click", () => {
     startBtn.classList.add('hidden');
+    finalScoreEl.textContent = "";
     displayQuestion();
     displayScore(false);
 });
