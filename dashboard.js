@@ -40,7 +40,7 @@ function renderQuizzes(quizzes) {
 
 function startQuiz(quizId) {
     // Redirect to quiz page with quizId 
-    window.location.href = `quiz-question.html`;
+    window.location.href = `quiz-question.html?quizId=${quizId}`;
 }
 
 function startLeaderboard(quizId) {
