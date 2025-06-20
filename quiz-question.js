@@ -7,6 +7,7 @@ const quizId = params.get('quizId');
 function loadQuizScript(quizId) {
   const quizScripts = {
     "linear-equations-1": "./linear-equations-1.js",
+    "linear-equations-2": "./linear-equations-2.js",
     // ...other quizzes
   };
   const scriptSrc = quizScripts[quizId];

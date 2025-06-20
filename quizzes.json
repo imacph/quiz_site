@@ -1,8 +1,15 @@
 [
   {
     "image": "linear-equations.jpg",
-    "title": "Single Variable Linear Equations",
-    "description": "This quiz tests your understanding of single variable linear equations. You will solve equations of the form ax + b = c, where a, b, and c are constants. The quiz includes multiple-choice questions to assess your ability to isolate the variable and find its value.",
+    "title": "Single Variable Linear Equations—Positive Integers",
+    "description": "Solve single variable linear equations where all coefficients and solutions are positive integers. Test your ability to isolate the variable and find its value in straightforward equations.",
+    "id": "linear-equations-2",
+    "disabled": ""
+  },
+  {
+    "image": "linear-equations.jpg",
+    "title": "Single Variable Linear Equations—General Integers",
+    "description": "Solve single variable linear equations where coefficients and solutions can be any integer, positive or negative. Assess your skills in manipulating equations with a wider range of integer values.",
     "id": "linear-equations-1",
     "disabled": ""
 },

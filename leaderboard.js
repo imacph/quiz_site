@@ -34,9 +34,44 @@ async function displayLeaderboard(quizId) {
         });
 
         leaderboardBody.innerHTML = rows || "<tr><td colspan='3'>No scores found.</td></tr>";
-            
-    }
+        document.getElementById("leaderboard-title").textContent = `Leaderboard for general linear equations`;
+    };
+    
+
+    if (quizId === "linear-equations-2") {
+
+        const leaderboardBody = document.getElementById("leaderboard-body");
+        leaderboardBody.innerHTML = "<tr><td colspan='3'>Loading...</td></tr>";
+
+        const q = query(
+            collection(db,"linear-equations-2"),
+            orderBy("score", "desc"),
+            limit(10)
+        );
+
+        const querySnapshot = await getDocs(q);
+
+        let rows = "";
+        let rank = 1;
+        querySnapshot.forEach(doc => {
+            const data = doc.data();
+            // Use data.username if available, otherwise fallback to doc.id
+            const name = data.displayName || doc.id;
+            rows += `
+                <tr>
+                    <td>${rank}</td>
+                    <td>${name}</td>
+                    <td>${data.score}</td>
+                </tr>
+            `;
+            rank++;
+        });
+
+        leaderboardBody.innerHTML = rows || "<tr><td colspan='3'>No scores found.</td></tr>";
+        document.getElementById("leaderboard-title").textContent = `Leaderboard for positive linear equations`;
+    };
 }
+
 
 
 const db = getFirestore(app);
