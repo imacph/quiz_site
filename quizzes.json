@@ -4,6 +4,8 @@
     "title": "Single Variable Linear Equations—Positive Integers",
     "description": "Solve single variable linear equations where all coefficients and solutions are positive integers. Test your ability to isolate the variable and find its value in straightforward equations.",
     "id": "linear-equations-2",
+    "type": "multi-choice",
+    "script": "./linear-equations-2.js",
     "disabled": ""
   },
   {
@@ -11,6 +13,8 @@
     "title": "Single Variable Linear Equations—General Integers",
     "description": "Solve single variable linear equations where coefficients and solutions can be any integer, positive or negative. Assess your skills in manipulating equations with a wider range of integer values.",
     "id": "linear-equations-1",
+    "type": "multi-choice",
+    "script": "./linear-equations-1.js",
     "disabled": ""
 },
   {
@@ -18,6 +22,8 @@
     "title": "Quadratic Equations with Real Roots",
     "description": "This quiz focuses on quadratic equations that have real roots. You will solve equations of the form ax^2 + bx + c = 0, where a, b, and c are constants. The quiz includes questions on factoring, using the quadratic formula, and identifying the nature of the roots based on the discriminant.",
     "id": "quadratic-equations-1",
+    "type": "multi-choice",
+    "script": "quadratic-equations-1.js",
     "disabled": "disabled"
   }
 ]

@@ -126,7 +126,7 @@ function resetQuiz(quizState,resetButtonClicked,pageElements) {
 
     timeDisplayEl.textContent = "";
     scoreEl.textContent = "";
-    finalScoreEl.textContent = `Final Score: ${calculateScore()}`;
+    finalScoreEl.textContent = `Final Score: ${calculateScore(quizState)}`;
     startBtn.classList.remove('hidden');
 
     document.querySelectorAll(".choice-btn").forEach(btn => {
@@ -139,7 +139,7 @@ function resetQuiz(quizState,resetButtonClicked,pageElements) {
     });
     
     if (!resetButtonClicked) {
-        saveScoreAfterQuiz(calculateScore());
+        saveScoreAfterQuiz(calculateScore(quizState));
     } else {
         console.log("Quiz reset by user. Not saving score.");
     }
@@ -188,7 +188,7 @@ async function saveScoreAfterQuiz(score) {
     }
 }
 
-function calculateScore() {
+function calculateScore(quizState) {
 
     if (quizState.correctAnswers === 0) {
         return 0.00;
@@ -243,31 +243,51 @@ function initializePageElements() {
     }
 }
 
-function startQuiz(quizState) {
+function startQuiz(quizzes) {
 
-    // Initialize page elements and buttons
-    const {
-        scoreEl, timeDisplayEl, 
-        finalScoreEl, startBtn, 
-        restartBtn, questionEl, 
-        choicesEl, nextBtn
-    } = initializePageElements();
+    const params = new URLSearchParams(window.location.search);
+    const quizId = params.get('quizId');
 
-    // Add event listeners to buttons
-    startBtn.addEventListener("click", () => {
-        startBtn.classList.add('hidden');
-        finalScoreEl.textContent = "";
-        displayQuestion(quizState,{ scoreEl, timeDisplayEl, finalScoreEl, startBtn, questionEl, choicesEl, nextBtn, restartBtn });
-        displayScore(quizState,false,{ scoreEl, timeDisplayEl, finalScoreEl, startBtn, questionEl, choicesEl, nextBtn, restartBtn });
+    let quizScriptSrc = null;
+    quizzes.map(quiz => {
+        if (quiz.id === quizId) {
+            quizScriptSrc = quiz.script;
+        }
     });
 
-    nextBtn.addEventListener("click", () => {
-        checkLoopCondition(quizState,{ scoreEl, timeDisplayEl, finalScoreEl, startBtn, questionEl, choicesEl, nextBtn, restartBtn });
+    import(quizScriptSrc).then(module => {
+        
+        const quizState = new QuizState(module.questionGenerator);
+        // Initialize page elements and buttons
+        const {
+            scoreEl, timeDisplayEl, 
+            finalScoreEl, startBtn, 
+            restartBtn, questionEl, 
+            choicesEl, nextBtn
+        } = initializePageElements();
+
+        // Add event listeners to buttons
+        startBtn.addEventListener("click", () => {
+            startBtn.classList.add('hidden');
+            finalScoreEl.textContent = "";
+            displayQuestion(quizState,{ scoreEl, timeDisplayEl, finalScoreEl, startBtn, questionEl, choicesEl, nextBtn, restartBtn });
+            displayScore(quizState,false,{ scoreEl, timeDisplayEl, finalScoreEl, startBtn, questionEl, choicesEl, nextBtn, restartBtn });
+        });
+
+            nextBtn.addEventListener("click", () => {
+            checkLoopCondition(quizState,{ scoreEl, timeDisplayEl, finalScoreEl, startBtn, questionEl, choicesEl, nextBtn, restartBtn });
+        });
+            restartBtn.addEventListener("click", () => resetQuiz(quizState,true,{ scoreEl, timeDisplayEl, finalScoreEl, startBtn, questionEl, choicesEl, nextBtn, restartBtn }));
+        }).catch(error => {
+            console.error("Failed to load quiz script:", error);
     });
-    restartBtn.addEventListener("click", () => resetQuiz(quizState,true,{ scoreEl, timeDisplayEl, finalScoreEl, startBtn, questionEl, choicesEl, nextBtn, restartBtn }));
 }
 
-import { generateLinearEquationQuestion } from "./linear-equations-1.js";
-const quizState = new QuizState(generateLinearEquationQuestion);
 
-startQuiz(quizState)
+
+
+fetch('quizzes.json')
+  .then(response => response.json())
+  .then(data => startQuiz(data))
+  .catch(error => console.error('Error loading quiz data:', error));
+
