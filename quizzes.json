@@ -16,7 +16,16 @@
     "type": "multi-choice",
     "script": "./linear-equations-1.js",
     "disabled": ""
-},
+  },
+  {
+    "image":"linear-equations.jpg",
+    "title": "Single Variable Linear Equations—Four terms",
+    "description": "This quiz focuses on single variable linear equations with four terms. You will solve equations of the form ax + b = cx + d, where a, b, c, and d are integers. The quiz includes questions on isolating the variable and simplifying expressions.",
+    "id": "linear-equations-3",
+    "type": "multi-choice",
+    "script": "./linear-equations-3.js",
+    "disabled": ""
+  },
   {
     "image": "quadratic-equations.jpg",
     "title": "Quadratic Equations with Real Roots",

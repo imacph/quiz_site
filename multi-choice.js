@@ -1,6 +1,10 @@
 import { app } from "./firebase.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js";
 import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js";
+const auth = getAuth(app);
+const db = getFirestore(app);
+const params = new URLSearchParams(window.location.search);
+const quizId = params.get('quizId');
 
 class QuizState {
   constructor(questionGenerator) {
@@ -153,12 +157,12 @@ function resetQuiz(quizState,resetButtonClicked,pageElements) {
 
 
 async function saveScoreAfterQuiz(score) {
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+
     const user = auth.currentUser;
+    console.log("Saving score:", score, "for user:", user ? user.uid : "No user");
     if (user) {
         try {
-            const scoreRef = doc(db, "scores", user.uid);
+            const scoreRef = doc(db, "scores", `${user.uid}_${quizId}`);
             const docSnap = await getDoc(scoreRef);
             let shouldUpdate = true;
             if (docSnap && docSnap.exists()) {
@@ -169,12 +173,14 @@ async function saveScoreAfterQuiz(score) {
                 if (!user.displayName) {
                     shouldUpdate = false;
                 }
+                
             }
             if (shouldUpdate) {
                 await setDoc(scoreRef, { 
                     score: Number(score),
                     displayName: user.displayName,
-                    userId: user.uid 
+                    userId: user.uid,
+                    quizId: quizId
                 });
                 console.log("Score saved!");
             } else {
@@ -228,7 +234,7 @@ function initializePageElements() {
         window.location.href = 'dashboard.html';
     });
     document.getElementById("leaderboard-btn").addEventListener("click", () => {
-        window.location.href = 'leaderboard.html?quizId=linear-equations-1';
+        window.location.href = `leaderboard.html?quizId=${quizId}`;
     });
 
     return {
@@ -245,8 +251,7 @@ function initializePageElements() {
 
 function startQuiz(quizzes) {
 
-    const params = new URLSearchParams(window.location.search);
-    const quizId = params.get('quizId');
+
 
     let quizScriptSrc = null;
     quizzes.map(quiz => {
