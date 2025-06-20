@@ -8,10 +8,14 @@ import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/fireb
 function generateLinearEquationQuestion() {
     const a = Math.floor(Math.random() * 10) + 1;      // a: 1-5
     const x = Math.floor(Math.random() * 10) + 1;     // x: 1-10
-    const b = Math.floor(Math.random() * 10) + 1;     // b: 1-10
-    const c = a*x +b;
+    
+    let b = Math.floor(Math.random() * 10) + 1;     // b: 1-10
+    while (b >= a*x) {
+        b = Math.floor(Math.random() * 10) + 1
+    }
+    const c = a*x -b;
 
-    const questionText = `Solve for x: ${a}x + ${b} = ${c}`;
+    const questionText = `Solve for x: ${a}x - ${b} = ${c}`;
     const correctAnswer = x;
 
     // Generate the wrong answers
