@@ -254,8 +254,9 @@ a:hover {
   }
   #question-container {
     max-width: 10rem;
+    width: 100%;
     margin: 15rem auto;
-    left: 2rem;
+    left: 1rem;
     position: absolute
   }
   #choices {
@@ -263,7 +264,7 @@ a:hover {
     gap: 0.5rem;
   }
   #question{
-    font-size: 1.5rem;
+    font-size: 1.3rem;
   }
 
   #score-container {

@@ -12,7 +12,7 @@ export function questionGenerator() {
     }
     const c = a*x -b;
 
-    const questionText = `Solve for x: ${a}x - ${b} = ${c}`;
+    const questionText = `${a}x - ${b} = ${c}`;
     const correctAnswer = x;
 
     // Generate the wrong answers
