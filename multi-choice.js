@@ -11,9 +11,9 @@ class QuizState {
     this.totalQuestions = -1;
     this.correctAnswers = 0;
     this.questionTimes = [];
-    this.questionGenerator = questionGenerator
+    this.questionGenerator = questionGenerator;
     // Add other properties as needed
-;
+
 
   }
 
@@ -30,6 +30,86 @@ class QuizState {
   }
 
   // Add more methods as needed
+}
+
+class QuizUI {
+    constructor(quizState) {
+        this.quizState = quizState;
+        
+        const pageElements = this.initializePageElements();
+        // Destructure the page elements for easier access
+        const { 
+            scoreEl, 
+            timeDisplayEl, 
+            finalScoreEl, 
+            startBtn, 
+            questionEl, 
+            choicesEl, 
+            nextBtn, 
+            restartBtn 
+            } = pageElements;
+
+        this.scoreEl = scoreEl;
+        this.timeDisplayEl = timeDisplayEl;
+        this.finalScoreEl = finalScoreEl;
+        this.startBtn = startBtn;
+        this.questionEl = questionEl;
+        this.choicesEl = choicesEl;
+        this.nextBtn = nextBtn;
+        this.restartBtn = restartBtn;
+
+        // Add event listeners to buttons
+        this.startBtn.addEventListener("click", () => {
+            this.startBtn.classList.add('hidden');
+            this.finalScoreEl.textContent = "";
+            this.displayQuestion();
+            this.displayScore(false);
+        });
+
+            nextBtn.addEventListener("click", () => {
+            checkLoopCondition(quizState,{ scoreEl, timeDisplayEl, finalScoreEl, startBtn, questionEl, choicesEl, nextBtn, restartBtn });
+        });
+            restartBtn.addEventListener("click", () => resetQuiz(quizState,true,{ scoreEl, timeDisplayEl, finalScoreEl, startBtn, questionEl, choicesEl, nextBtn, restartBtn }));
+    }
+    
+    initializePageElements() {
+
+        const scoreEl = document.getElementById("score-display");
+        const timeDisplayEl = document.getElementById("time-display");
+        const finalScoreEl = document.getElementById("final-score-display");
+        const questionEl = document.getElementById("question");
+        const choicesEl = document.getElementById("choices");
+
+
+        const startBtn = document.getElementById("start-btn");
+        const restartBtn = document.getElementById("restart-btn");
+        const nextBtn = document.getElementById("next-btn");
+        
+        // Hide certain elements initially
+        [questionEl, choicesEl, nextBtn, restartBtn].forEach(el => {
+            el.classList.add('hidden');
+        });
+
+        document.getElementById("dashboard-btn").addEventListener("click", () => {
+            window.location.href = 'dashboard.html';
+        });
+        document.getElementById("leaderboard-btn").addEventListener("click", () => {
+            window.location.href = `leaderboard.html?quizId=${quizId}`;
+        });
+
+        
+
+        return {
+            scoreEl,
+            timeDisplayEl,
+            finalScoreEl,
+            startBtn,
+            restartBtn,
+            questionEl,
+            choicesEl,
+            nextBtn
+        }
+    }
 }
 
 function checkLoopCondition(quizState,pageElements) {
