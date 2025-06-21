@@ -9,7 +9,7 @@ export function questionGenerator() {
     const b = Math.floor(Math.random()*20)-10;
     
     let c  = Math.floor(Math.random()*20)-10;
-    while (Math.abs(a*x + b - c*x) > 14) {
+    while ((Math.abs(a*x + b - c*x) > 14) || (c === a)) {
         c = Math.floor(Math.random()*20) - 10;
     }
 
