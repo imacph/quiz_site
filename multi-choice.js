@@ -7,153 +7,251 @@ const params = new URLSearchParams(window.location.search);
 const quizId = params.get('quizId');
 
 class QuizState {
-  constructor(questionGenerator) {
-    this.totalQuestions = -1;
-    this.correctAnswers = 0;
-    this.questionTimes = [];
-    this.questionGenerator = questionGenerator
-    // Add other properties as needed
-;
+    constructor(questionGenerator) {
+        this.resetQuizState();
+        this.questionGenerator = questionGenerator;
+        // Add other properties as needed
 
-  }
 
-  incrementQuestions() {
-    this.totalQuestions++;
-  }
+    }
+    resetQuizState() {
+        this.totalQuestions = -1;
+        this.correctAnswers = 0;
+        this.questionTimes = [];
+    }
+    incrementQuestions() {
+        this.totalQuestions++;
+    }
 
-  addCorrectAnswer() {
-    this.correctAnswers++;
-  }
+    addCorrectAnswer() {
+        this.correctAnswers++;
+    }
 
-  addQuestionTime(time) {
-    this.questionTimes.push(time);
-  }
+    addQuestionTime(time) {
+        this.questionTimes.push(time);
+    }
 
   // Add more methods as needed
 }
 
-function checkLoopCondition(quizState,pageElements) {
+class QuizUI {
+    constructor(quizState) {
+        this.quizState = quizState;
+        
+        const pageElements = this.initializePageElements();
+        // Destructure the page elements for easier access
+        const { 
+            scoreEl, 
+            timeDisplayEl, 
+            finalScoreEl, 
+            startBtn, 
+            questionEl, 
+            choicesEl, 
+            nextBtn, 
+            restartBtn 
+            } = pageElements;
 
-    if (quizState.totalQuestions >= 10) {
-        resetQuiz(quizState,false,pageElements);
-    } else {
-        displayQuestion(quizState,pageElements);
-    }
-}
+        this.scoreEl = scoreEl;
+        this.timeDisplayEl = timeDisplayEl;
+        this.finalScoreEl = finalScoreEl;
+        this.startBtn = startBtn;
+        this.questionEl = questionEl;
+        this.choicesEl = choicesEl;
+        this.nextBtn = nextBtn;
+        this.restartBtn = restartBtn;
+        
+        
+        // Add event listeners to buttons
+        this.startBtn.addEventListener("click", () => {
+            this.startBtn.classList.add('hidden');
+            this.finalScoreEl.textContent = "";
+            this.displayQuestion();
+            this.displayScore(false);
+        });
 
-function displayQuestion(quizState,pageElements) {
-
-    const { scoreEl, timeDisplayEl, finalScoreEl, startBtn, questionEl, choicesEl, nextBtn, restartBtn } = pageElements;
-
-    [questionEl, choicesEl, nextBtn, restartBtn].forEach(el => {
-        el.classList.remove('hidden');
-    });
-
-    const {questionText,choices,correctAnswer} = quizState.questionGenerator();
-    let questionStart = performance.now();
-    nextBtn.classList.add('hidden');
-
-    if (quizState.totalQuestions < 9) {
-        nextBtn.textContent = "Next Question";
-    } else {
-        nextBtn.textContent = "Finish Quiz";
+            nextBtn.addEventListener("click", () => {
+            this.checkLoopCondition();
+        });
+            restartBtn.addEventListener("click", () => this.resetQuiz(true));
     }
     
-    questionEl.textContent = questionText;
-    choicesEl.innerHTML = "";
+    initializePageElements() {
 
-    choicesEl.innerHTML = choices.map(choice => 
-        `<button class="choice-btn">${choice}</button>`
-    ).join('');
+        const scoreEl = document.getElementById("score-display");
+        const timeDisplayEl = document.getElementById("time-display");
+        const finalScoreEl = document.getElementById("final-score-display");
+        const questionEl = document.getElementById("question");
+        const choicesEl = document.getElementById("choices");
 
-    const choiceButtons = choicesEl.querySelectorAll(".choice-btn");
+
+        const startBtn = document.getElementById("start-btn");
+        const restartBtn = document.getElementById("restart-btn");
+        const nextBtn = document.getElementById("next-btn");
+        
+        // Hide certain elements initially
+        [questionEl, choicesEl, nextBtn, restartBtn].forEach(el => {
+            el.classList.add('hidden');
+        });
+
+        document.getElementById("dashboard-btn").addEventListener("click", () => {
+            window.location.href = 'dashboard.html';
+        });
+        document.getElementById("leaderboard-btn").addEventListener("click", () => {
+            window.location.href = `leaderboard.html?quizId=${quizId}`;
+        });
+
+        
+
+        return {
+            scoreEl,
+            timeDisplayEl,
+            finalScoreEl,
+            startBtn,
+            restartBtn,
+            questionEl,
+            choicesEl,
+            nextBtn
+        }
+    }
+
+    displayQuestion() {
+
+    
+        [this.questionEl, this.choicesEl, this.restartBtn].forEach(el => {
+            el.classList.remove('hidden');
+        });
+
+        const {questionText,choices,correctAnswer} = this.quizState.questionGenerator();
+
+        let questionStart = performance.now();
+        this.nextBtn.classList.add('hidden');
+
+        if (this.quizState.totalQuestions < 9) {
+            this.nextBtn.textContent = "Next Question";
+        } else {
+            this.nextBtn.textContent = "Finish Quiz";
+        }
+        
+        this.questionEl.textContent = questionText;
+
+        this.choicesEl.innerHTML = "";
+        this.choicesEl.innerHTML = choices.map(choice => 
+            `<button class="choice-btn">${choice}</button>`
+        ).join('');
 
 
-    choiceButtons.forEach(btn => {
-        btn.addEventListener('click',()=>{
-            btn.classList.add('chosen');
-            nextBtn.classList.remove('hidden');
+        const choiceButtons = this.choicesEl.querySelectorAll(".choice-btn");
 
-            
-            let questionTime = performance.now() - questionStart;
-            let answerFlag = (Number(btn.textContent) === correctAnswer);
 
-            if (answerFlag) {
-                quizState.questionTimes.push(questionTime);
-            }
-            
-            displayScore(quizState,answerFlag,pageElements);
+        choiceButtons.forEach(btn => {
+            btn.addEventListener('click',()=>{
+                btn.classList.add('chosen');
+                this.nextBtn.classList.remove('hidden');
 
-            choiceButtons.forEach(otherBtn=>{
-                otherBtn.classList.add('clicked');
-                if (Number(otherBtn.textContent) === correctAnswer) {
-                    otherBtn.classList.add('correct');
-                } else {
-                    otherBtn.classList.add('incorrect');
+                
+                let questionTime = performance.now() - questionStart;
+                let answerFlag = (Number(btn.textContent) === correctAnswer);
+
+                if (answerFlag) {
+                    this.quizState.questionTimes.push(questionTime);
                 }
+                
+                this.displayScore(answerFlag);
+
+                choiceButtons.forEach(otherBtn=>{
+                    otherBtn.classList.add('clicked');
+                    if (Number(otherBtn.textContent) === correctAnswer) {
+                        otherBtn.classList.add('correct');
+                    } else {
+                        otherBtn.classList.add('incorrect');
+                    }
+                });
             });
         });
-    });
 
     
+    }
+
+    displayScore(answerFlag) { 
+
+        this.timeDisplayEl.textContent = "";
+
+        if (this.quizState.totalQuestions < 0) {
+            this.restartBtn.classList.add('hidden');
+        } else {
+            this.restartBtn.classList.remove('hidden');
+        }
+
+        if (this.quizState.questionTimes.length > 0) {
+            const totalTime = this.quizState.questionTimes.reduce((acc, time) => acc + time, 0)/1000;
+            const averageTime = (totalTime / this.quizState.questionTimes.length).toFixed(2);
+            this.timeDisplayEl.textContent = `Average Time: ${averageTime}s`;
+        }
+
+        this.quizState.incrementQuestions();
+        if (answerFlag) {
+            this.quizState.addCorrectAnswer();
+        }
+        
+        this.scoreEl.textContent = `${this.quizState.correctAnswers}/${this.quizState.totalQuestions}`;
+    }
+
+    checkLoopCondition() {
+
+        if (this.quizState.totalQuestions >= 10) {
+            this.resetQuiz(false);
+        } else {
+            this.displayQuestion();
+        }
+    }
+
+    resetQuiz(resetButtonClicked) {
+
+
+        this.timeDisplayEl.textContent = "";
+        this.scoreEl.textContent = "";
+        this.finalScoreEl.textContent = `Final Score: ${this.calculateScore(this.quizState)}`;
+        this.startBtn.classList.remove('hidden');
+
+        document.querySelectorAll(".choice-btn").forEach(btn => {
+            btn.classList.remove('chosen', 'clicked', 'correct', 'incorrect');
+            btn.classList.add('hidden');
+        });
+
+        [this.questionEl, this.choicesEl, this.nextBtn, this.restartBtn].forEach(el => {
+            el.classList.add('hidden');
+        });
+        
+        if (!resetButtonClicked) {
+            saveScoreAfterQuiz(this.calculateScore(this.quizState));
+        } else {
+            console.log("Quiz reset by user. Not saving score.");
+        }
+
+    
+        this.quizState.resetQuizState();
+    
+    }
+
+    calculateScore() {
+
+        if (this.quizState.correctAnswers === 0) {
+            return 0.00;
+        } else {
+            const accuracy = this.quizState.correctAnswers / 10;
+            const averageTime = (this.quizState.questionTimes.reduce((acc,time) => acc + time, 0) / this.quizState.questionTimes.length)/1000;
+
+
+            const score = 100 * accuracy * Math.exp(-averageTime / 10);
+            return score.toFixed(2);
+        }
+    }
+
+
+
 }
 
-function displayScore(quizState,answerFlag,pageElements) {
 
-    const { scoreEl, timeDisplayEl, finalScoreEl, startBtn, questionEl, choicesEl, nextBtn, restartBtn }= pageElements;
-
-    timeDisplayEl.textContent = "";
-
-    if (quizState.totalQuestions < 0) {
-        restartBtn.classList.add('hidden');
-    } else {
-        restartBtn.classList.remove('hidden');
-    }
-
-    if (quizState.questionTimes.length > 0) {
-        const totalTime = quizState.questionTimes.reduce((acc, time) => acc + time, 0)/1000;
-        const averageTime = (totalTime / quizState.questionTimes.length).toFixed(2);
-        timeDisplayEl.textContent = `Average Time: ${averageTime}s`;
-    }
-
-    quizState.incrementQuestions();
-    if (answerFlag) {
-        quizState.addCorrectAnswer();
-    }
-    
-    scoreEl.textContent = `${quizState.correctAnswers}/${quizState.totalQuestions}`;
-}
-
-function resetQuiz(quizState,resetButtonClicked,pageElements) {
-
-    const { scoreEl, timeDisplayEl, finalScoreEl, startBtn, questionEl, choicesEl, nextBtn, restartBtn } = pageElements;
-
-    timeDisplayEl.textContent = "";
-    scoreEl.textContent = "";
-    finalScoreEl.textContent = `Final Score: ${calculateScore(quizState)}`;
-    startBtn.classList.remove('hidden');
-
-    document.querySelectorAll(".choice-btn").forEach(btn => {
-        btn.classList.remove('chosen', 'clicked', 'correct', 'incorrect');
-        btn.classList.add('hidden');
-    });
-
-    [questionEl, choicesEl, nextBtn, restartBtn].forEach(el => {
-        el.classList.add('hidden');
-    });
-    
-    if (!resetButtonClicked) {
-        saveScoreAfterQuiz(calculateScore(quizState));
-    } else {
-        console.log("Quiz reset by user. Not saving score.");
-    }
-
-    quizState.totalQuestions = -1;
-    quizState.correctAnswers = 0;
-    quizState.questionTimes = [];
-
-    
-}
 
 
 async function saveScoreAfterQuiz(score) {
@@ -194,60 +292,8 @@ async function saveScoreAfterQuiz(score) {
     }
 }
 
-function calculateScore(quizState) {
-
-    if (quizState.correctAnswers === 0) {
-        return 0.00;
-    } else {
-        const accuracy = quizState.correctAnswers / 10;
-        const averageTime = (quizState.questionTimes.reduce((acc,time) => acc + time, 0) / quizState.questionTimes.length)/1000;
 
 
-        const score = 100 * accuracy * Math.exp(-averageTime / 10);
-        return score.toFixed(2);
-    }
-}
-
-
-function initializePageElements() {
-
-    const scoreEl = document.getElementById("score-display");
-    const timeDisplayEl = document.getElementById("time-display");
-    const finalScoreEl = document.getElementById("final-score-display");
-    const questionEl = document.getElementById("question");
-    const choicesEl = document.getElementById("choices");
-
-
-    const startBtn = document.getElementById("start-btn");
-    
-
-    const restartBtn = document.getElementById("restart-btn");
-
-    const nextBtn = document.getElementById("next-btn");
-
-    // Hide certain elements initially
-    [questionEl, choicesEl, nextBtn, restartBtn].forEach(el => {
-        el.classList.add('hidden');
-    });
-
-    document.getElementById("dashboard-btn").addEventListener("click", () => {
-        window.location.href = 'dashboard.html';
-    });
-    document.getElementById("leaderboard-btn").addEventListener("click", () => {
-        window.location.href = `leaderboard.html?quizId=${quizId}`;
-    });
-
-    return {
-        scoreEl,
-        timeDisplayEl,
-        finalScoreEl,
-        startBtn,
-        restartBtn,
-        questionEl,
-        choicesEl,
-        nextBtn
-    }
-}
 
 function startQuiz(quizzes) {
 
@@ -263,26 +309,9 @@ function startQuiz(quizzes) {
     import(quizScriptSrc).then(module => {
         
         const quizState = new QuizState(module.questionGenerator);
-        // Initialize page elements and buttons
-        const {
-            scoreEl, timeDisplayEl, 
-            finalScoreEl, startBtn, 
-            restartBtn, questionEl, 
-            choicesEl, nextBtn
-        } = initializePageElements();
 
-        // Add event listeners to buttons
-        startBtn.addEventListener("click", () => {
-            startBtn.classList.add('hidden');
-            finalScoreEl.textContent = "";
-            displayQuestion(quizState,{ scoreEl, timeDisplayEl, finalScoreEl, startBtn, questionEl, choicesEl, nextBtn, restartBtn });
-            displayScore(quizState,false,{ scoreEl, timeDisplayEl, finalScoreEl, startBtn, questionEl, choicesEl, nextBtn, restartBtn });
-        });
+        const quizUI = new QuizUI(quizState);
 
-            nextBtn.addEventListener("click", () => {
-            checkLoopCondition(quizState,{ scoreEl, timeDisplayEl, finalScoreEl, startBtn, questionEl, choicesEl, nextBtn, restartBtn });
-        });
-            restartBtn.addEventListener("click", () => resetQuiz(quizState,true,{ scoreEl, timeDisplayEl, finalScoreEl, startBtn, questionEl, choicesEl, nextBtn, restartBtn }));
         }).catch(error => {
             console.error("Failed to load quiz script:", error);
     });
